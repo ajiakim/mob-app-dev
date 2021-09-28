@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "559259894720",
+    "project_id": "akim61-fanpage",
+    "storage_bucket": "akim61-fanpage.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559259894720:android:3c9168adb2f96eb17e3e25",
+        "android_client_info": {
+          "package_name": "com.example.fan_page1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "559259894720-sq4q7k5lru97ahdbu1a1vi9d9i47vpe1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwR31P3Ljg3Zjr-4KhHB7L11w5H6QeADo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "559259894720-sq4q7k5lru97ahdbu1a1vi9d9i47vpe1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
