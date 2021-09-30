@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fan_page1/driver.dart';
 import 'package:fan_page1/views/registerPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fan_page1/ui/loading.dart';
+import 'admin_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -89,6 +92,7 @@ class _LoginState extends State<LoginPage> {
         }
       },
       child: const Text('Submit'),
+      style: TextButton.styleFrom(primary: Colors.lightGreen[300]),
     );
 
     final registerButton = OutlinedButton(
@@ -97,9 +101,11 @@ class _LoginState extends State<LoginPage> {
             context, MaterialPageRoute(builder: (con) => const RegisterPage()));
       },
       child: const Text('Register'),
+      style: TextButton.styleFrom(primary: Colors.lightGreen[300]),
     );
 
     return Scaffold(
+      backgroundColor: Colors.blueGrey[400],
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -123,15 +129,23 @@ class _LoginState extends State<LoginPage> {
           ],
         ),
       ),
-      backgroundColor: Colors.blueGrey,
       // This trailing comma makes auto-formatting nicer for build methods.
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: signOut,
+      //   tooltip: 'Log out',
+      //   child: const Icon(Icons.logout),
+      //     backgroundColor: Colors.lightGreen[300],
+      //     foregroundColor: Colors.grey[700]
+      // ),
     );
   }
 
   Future<void> login() async {
+    await Firebase.initializeApp();
     try {
       UserCredential _ = await _auth.signInWithEmailAndPassword(
           email: _email, password: _password);
+      roleCheck();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (con) => AppDriver()));
     } on FirebaseAuthException catch (e) {
@@ -154,4 +168,30 @@ class _LoginState extends State<LoginPage> {
       _loading = false;
     });
   }
+
+  void roleCheck() async{
+    FirebaseFirestore.instance.collection('user').doc(_auth.currentUser!.uid).get().then((value){
+      if(value.data()!['role'] == 'ADMIN'){
+        Navigator.pushReplacement(context,MaterialPageRoute(builder:  (con) => Admin()));
+      }else{
+        Navigator.pushReplacement(context,MaterialPageRoute(builder:  (con) => AppDriver()));
+      }
+    });
+  }
+
+  void signOut() async {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    if(_auth.currentUser != null) {
+      await _auth.signOut();
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Logged out")));
+    }else{
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("No user logged in")));
+    }
+    setState(() {
+
+    });
+  }
+
 }

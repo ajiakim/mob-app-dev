@@ -1,9 +1,10 @@
-import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fan_page1/driver.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final FirebaseFirestore _db = FirebaseFirestore.instance;
 
 class Admin extends StatefulWidget {
   Admin({Key? key}) : super(key: key);
@@ -13,34 +14,32 @@ class Admin extends StatefulWidget {
 }
 
 class _AdminHomeState extends State<Admin> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
-  
   List<String> messages = [];
-  
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("The Mochis"),
-        actions: <Widget>[
-          FloatingActionButton(
-            onPressed: (){
-              add(context);
-            },
-            child: const Icon(Icons.add)
-          )
-        ]
-      ),
+        appBar: AppBar(
+            title: Text("Ajia's Mochis"),
+            actions: <Widget>[
+              FloatingActionButton(
+                  onPressed: (){
+                    add(context);
+                  },
+                  child: const Icon(Icons.add)
+              )
+            ]
+        ),
 
 
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.blueGrey[400],
         body: Container( child: ListView.builder(
             padding: const EdgeInsets.all(8),
             itemCount: messages.length,
             itemBuilder: (BuildContext context, int index){
               return Container (
                 height: 50,
-                color: Colors.yellow,
+                color: Colors.lightGreen[300],
                 child: Center(child: Text('${messages[index]}')),
               );
             }
@@ -55,6 +54,8 @@ class _AdminHomeState extends State<Admin> {
                 },
                 tooltip: 'Log out',
                 child: const Icon(Icons.logout),
+                backgroundColor: Colors.lightGreen[300],
+                foregroundColor: Colors.grey[700],
               ),
             ]
         )
