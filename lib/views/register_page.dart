@@ -184,9 +184,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   }
                 },
                 child: const Text('Submit'),
+                style: TextButton.styleFrom(primary: Colors.lightGreen[300]),
               )
             ])),
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Colors.blueGrey[400],
     );
   }
 
