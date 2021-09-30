@@ -14,6 +14,8 @@ void main()async {
 }
 
 class HomePage extends StatelessWidget {
+  const HomePage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -30,14 +32,14 @@ class AddPost extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.lightGreen[300],
         centerTitle: true,
-        title: Text("Ajia's Mochis"),
+        title: const Text("Ajia's Mochis"),
         titleTextStyle: TextStyle(color: Colors.black54,fontSize: 40,),
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('messages').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
@@ -45,7 +47,7 @@ class AddPost extends StatelessWidget {
           return ListView(
             children: snapshot.data!.docs.map((document) {
               return Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(16.0),
                 height: 60,
                 color: Colors.purple[100],
                 child: Center(child: Text(document['message'])),
@@ -73,8 +75,8 @@ class AddPost extends StatelessWidget {
         builder: (context) {
           return AlertDialog(
             backgroundColor: Colors.blueGrey,
-            title: Text("Log Out"),
-            content: Text("How Sure Are You About This?", textAlign: TextAlign.center,),
+            title: const Text("Log Out"),
+            content: const Text("How Sure Are You About This?", textAlign: TextAlign.center,),
             actions: <Widget>[
               TextButton(
                 onPressed: () async {
@@ -86,7 +88,7 @@ class AddPost extends StatelessWidget {
                       context, MaterialPageRoute(builder: (con) => AppDriver()));
                   ScaffoldMessenger.of(context).clearSnackBars();
                 },
-                child: Text("eh.."),
+                child: const Text("eh.."),
                 style: TextButton.styleFrom(
                   primary: Colors.lightGreen[300],
                 ),

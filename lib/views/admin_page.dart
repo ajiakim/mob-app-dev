@@ -7,7 +7,7 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 final FirebaseFirestore _db = FirebaseFirestore.instance;
 
 class Admin extends StatefulWidget {
-  Admin({Key? key}) : super(key: key);
+  const Admin({Key? key}) : super(key: key);
 
   @override
   _AdminHomeState createState() => _AdminHomeState();
@@ -20,55 +20,87 @@ class _AdminHomeState extends State<Admin> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: Text("Ajia's Mochis"),
-            actions: <Widget>[
-              FloatingActionButton(
-                  onPressed: (){
-                    add(context);
-                  },
-                  child: const Icon(Icons.add)
-              )
-            ]
+            backgroundColor: Colors.lightGreen[300],
+            centerTitle: true,
+            title: const Text("Ajia's Mochis"),
+            titleTextStyle: const TextStyle(color: Colors.black54, fontSize: 40),
         ),
-
-
         backgroundColor: Colors.blueGrey[400],
-        body: Container( child: ListView.builder(
-            padding: const EdgeInsets.all(8),
-            itemCount: messages.length,
-            itemBuilder: (BuildContext context, int index){
-              return Container (
-                height: 50,
-                color: Colors.lightGreen[300],
-                child: Center(child: Text('${messages[index]}')),
+        body: StreamBuilder(
+          stream: FirebaseFirestore.instance.collection('messages').snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(),
               );
             }
 
-        ),),
+            return ListView(
+              children: snapshot.data!.docs.map((document) {
+                return Container(
+                  padding: const EdgeInsets.all(16.0),
+                  height: 60,
+                  color: Colors.purple[100],
+                  child: Center(child: Text(document['message'])),
+                );
+              }).toList(),
+            );
+          },
+        ),
         floatingActionButton: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               FloatingActionButton(
-                onPressed: () {
-                  signOut(context);
-                },
-                tooltip: 'Log out',
-                child: const Icon(Icons.logout),
-                backgroundColor: Colors.lightGreen[300],
-                foregroundColor: Colors.grey[700],
+                  onPressed: () {
+                    add(context);
+                  },
+                  child: const Icon(Icons.add),
+                  backgroundColor: Colors.lightGreen[300],
+                  foregroundColor: Colors.grey[700]
               ),
-            ]
+              const SizedBox(
+                width: 30,
+              ),
+              FloatingActionButton(
+                  onPressed: () {
+                    signOut(context);
+                  },
+                  tooltip: 'Log out',
+                  child: const Icon(Icons.logout),
+                  backgroundColor: Colors.lightGreen[300],
+                  foregroundColor: Colors.grey[700],
+                ),
+            ],
         )
     );
   }
 
   void signOut(BuildContext context) async {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    await _auth.signOut();
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('User logged out.')));
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (con) => AppDriver()));
+    return showDialog(context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.blueGrey,
+            title: const Text("Log Out"),
+            content: const Text("How Sure Are You About This?", textAlign: TextAlign.center,),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () async {
+                  await _auth.signOut();
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(
+                      const SnackBar(content: Text('User logged out.')));
+                  Navigator.pushReplacement(
+                      context, MaterialPageRoute(builder: (con) => AppDriver()));
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                },
+                child: const Text("eh.."),
+                style: TextButton.styleFrom(
+                  primary: Colors.lightGreen[300],
+                ),
+              ),
+            ],
+          );
+        });
   }
 
   final TextEditingController _textFieldController = TextEditingController();
@@ -77,11 +109,12 @@ class _AdminHomeState extends State<Admin> {
     return showDialog(context: context,
         builder: (context){
           return AlertDialog(
+            backgroundColor: Colors.blueGrey,
             content: TextField(
               controller: _textFieldController,
               textInputAction: TextInputAction.go,
               keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(hintText: "Enter message"),
+              decoration: const InputDecoration(hintText: "Enter message"),
             ),
             actions: <Widget>[
               OutlinedButton(
@@ -91,7 +124,9 @@ class _AdminHomeState extends State<Admin> {
                       Navigator.pop(context);
                     });
                   },
-                  child: Text('Updates'))
+                  child: const Text('Updates'),
+                  style: TextButton.styleFrom(
+                    primary: Colors.lightGreen[300],))
             ],
           );
         });

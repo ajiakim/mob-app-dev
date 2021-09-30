@@ -3,8 +3,9 @@ import 'package:fan_page1/driver.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:splashscreen/splashscreen.dart';
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const App());
 }
 
@@ -22,7 +23,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primarySwatch: Colors.yellow,
+        primarySwatch: Colors.blueGrey,
       ),
       home: Scaffold(
         body: FutureBuilder(
@@ -59,8 +60,8 @@ class Splash extends StatelessWidget {
       ),
       loadingText: const Text('Here We Go!!', textScaleFactor: 2,),
       photoSize: 200.0,
-      loaderColor: Colors.yellow,
-      backgroundColor: Colors.blueGrey,
+      loaderColor: Colors.lightGreen[300],
+      backgroundColor: Colors.blueGrey[400],
     );
   }
 }

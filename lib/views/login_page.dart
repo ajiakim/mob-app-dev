@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fan_page1/driver.dart';
-import 'package:fan_page1/views/registerPage.dart';
+import 'package:fan_page1/views/register_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fan_page1/ui/loading.dart';
 import 'admin_page.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -15,8 +16,11 @@ class LoginPage extends StatefulWidget {
 
 class _LoginState extends State<LoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _emailController, _passwordController;
+
+  get model => null;
 
   @override
   void initState() {
@@ -104,6 +108,14 @@ class _LoginState extends State<LoginPage> {
       style: TextButton.styleFrom(primary: Colors.lightGreen[300]),
     );
 
+    final google = IconButton(
+      icon: Image.asset('allTheThings/Gmail-logo.png'),
+      iconSize: 60,
+      onPressed: (){
+        googleSignIn();
+      },
+    );
+
     return Scaffold(
       backgroundColor: Colors.blueGrey[400],
       body: Center(
@@ -113,7 +125,7 @@ class _LoginState extends State<LoginPage> {
             _auth.currentUser != null
                 ? Text(_auth.currentUser!.uid)
                 : _loading
-                ? Loading()
+                ? const Loading()
                 : Form(
               key: _formKey,
               child: Column(
@@ -122,7 +134,8 @@ class _LoginState extends State<LoginPage> {
                   emailInput,
                   passwordInput,
                   submitButton,
-                  registerButton
+                  registerButton,
+                  google
                 ],
               ),
             )
@@ -130,13 +143,6 @@ class _LoginState extends State<LoginPage> {
         ),
       ),
       // This trailing comma makes auto-formatting nicer for build methods.
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: signOut,
-      //   tooltip: 'Log out',
-      //   child: const Icon(Icons.logout),
-      //     backgroundColor: Colors.lightGreen[300],
-      //     foregroundColor: Colors.grey[700]
-      // ),
     );
   }
 
@@ -192,6 +198,20 @@ class _LoginState extends State<LoginPage> {
     setState(() {
 
     });
+  }
+
+  void  googleSignIn() async {
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    await FirebaseAuth.instance.signInWithCredential(credential);
+
+    Navigator.pushReplacement(context,MaterialPageRoute(builder:  (con) => AppDriver()));
   }
 
 }
